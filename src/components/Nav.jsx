@@ -1,12 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { logo, primaryNav } from "../data/catalog";
 import { useCart } from "../context/CartContext";
+
+const DESKTOP_NAV = "(min-width: 960px)";
 
 export default function Nav() {
   const { count } = useCart();
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const buttonRef = useRef(null);
+  const panelRef = useRef(null);
 
   useEffect(() => {
     setOpen(false);
@@ -14,29 +18,98 @@ export default function Nav() {
 
   useEffect(() => {
     if (!open) return undefined;
-    function onKeyDown(event) {
-      if (event.key === "Escape") setOpen(false);
+    const media = window.matchMedia(DESKTOP_NAV);
+
+    function syncScrollLock() {
+      document.body.style.overflow = media.matches ? "" : "hidden";
     }
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+
+    syncScrollLock();
+    media.addEventListener("change", syncScrollLock);
+
+    const button = buttonRef.current;
+    const panel = panelRef.current;
+
+    function focusableItems() {
+      const links = panel ? Array.from(panel.querySelectorAll("a, button")) : [];
+      return button ? [button, ...links] : links;
+    }
+
+    if (!media.matches) {
+      panel?.querySelector("a")?.focus();
+    }
+
+    function onKeyDown(event) {
+      if (media.matches) return;
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      setOpen(false);
+      button?.focus();
+    }
+
+    function onFocusIn(event) {
+      if (media.matches) return;
+      const items = focusableItems();
+      if (items.length === 0 || items.includes(event.target)) return;
+      (panel?.querySelector("a") ?? button)?.focus();
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("focusin", onFocusIn);
+    return () => {
+      media.removeEventListener("change", syncScrollLock);
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("focusin", onFocusIn);
+      document.body.style.overflow = "";
+    };
   }, [open]);
 
   return (
-    <header className="bg-header text-white">
-      <div className="page-wrap flex items-center gap-3 py-3">
-        <Link to="/" className="mr-auto inline-flex shrink-0 items-center">
-          <img src={logo.src} alt={logo.alt} className="h-10 w-auto sm:h-12" />
+    <header className="site-header">
+      {open ? (
+        <button
+          type="button"
+          className="nav-backdrop"
+          tabIndex={-1}
+          aria-label="Close menu"
+          onClick={() => {
+            setOpen(false);
+            buttonRef.current?.focus();
+          }}
+        />
+      ) : null}
+      <div className="page-wrap header-bar">
+        <Link to="/" className="logo-link">
+          <img src={logo.src} alt={logo.alt} />
         </Link>
-        <Link
-          to="/cart"
-          data-testid="cart-link"
-          className="inline-flex min-h-11 items-center text-white no-underline"
+        <nav
+          id="primary-nav"
+          ref={panelRef}
+          aria-label="Primary"
+          data-testid="primary-nav"
+          className={`nav-panel ${open ? "is-open" : ""}`}
         >
-          Cart (<span data-testid="cart-count">{count}</span>)
+          <ul className="nav-list">
+            {primaryNav.map((item) => (
+              <li key={item.to}>
+                <NavLink
+                  to={item.to}
+                  end={item.to === "/"}
+                  className="nav-link"
+                >
+                  {item.label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <Link to="/cart" data-testid="cart-link" className="cart-link">
+          Cart <span className="cart-count" data-testid="cart-count">{count}</span>
         </Link>
         <button
           type="button"
-          className="btn btn-secondary min-w-11 md:hidden"
+          ref={buttonRef}
+          className="btn menu-button"
           data-testid="menu-button"
           aria-expanded={open}
           aria-controls="primary-nav"
@@ -45,30 +118,6 @@ export default function Nav() {
           {open ? "Close" : "Menu"}
         </button>
       </div>
-      <nav
-        id="primary-nav"
-        aria-label="Primary"
-        data-testid="primary-nav"
-        className={`${open ? "block" : "hidden"} border-t border-white/15 md:block`}
-      >
-        <ul className="page-wrap m-0 flex list-none flex-col gap-1 px-0 py-3 md:flex-row md:flex-wrap md:gap-x-5 md:py-2">
-          {primaryNav.map((item) => (
-            <li key={item.to}>
-              <NavLink
-                to={item.to}
-                end={item.to === "/"}
-                className={({ isActive }) =>
-                  `inline-flex min-h-11 items-center text-white no-underline ${
-                    isActive ? "underline underline-offset-4" : ""
-                  }`
-                }
-              >
-                {item.label}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
-      </nav>
     </header>
   );
 }

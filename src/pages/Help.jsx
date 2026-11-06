@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import PageMast from "../components/PageMast";
 import { business, helpLinks } from "../data/catalog";
 
 export default function Help() {
@@ -8,18 +9,20 @@ export default function Help() {
   }, []);
 
   return (
-    <div className="page-wrap grid max-w-3xl gap-4">
-      <h1 className="mb-0 mt-0 text-3xl">Help</h1>
-      <p className="mt-0">
-        Help documents published by Leeps, plus the phone numbers observed for
-        this demo. Quote requests for unverified prices go to the phone line.
-      </p>
-      <p>
-        <a href={business.phoneTel}>{business.phone}</a>
-        {" · "}
-        <a href={business.phoneObservedTel}>{business.phoneObserved}</a>
-      </p>
-      <ul>
+    <div className="page-wrap page-pad">
+      <PageMast eyebrow="Documents and phone" title="Help">
+        <p>
+          Help documents published by Leeps, plus the phone numbers observed
+          for this demo. Quote requests for unverified prices go to the phone
+          line.
+        </p>
+        <p>
+          <a href={business.phoneTel}>{business.phone}</a>
+          {" · "}
+          <a href={business.phoneObservedTel}>{business.phoneObserved}</a>
+        </p>
+      </PageMast>
+      <ul className="doc-list">
         {helpLinks.map((link) => (
           <li key={link.label}>
             {link.href ? (

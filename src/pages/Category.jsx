@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import PageMast from "../components/PageMast";
 import ProductCard from "../components/ProductCard";
 import { getCategory, productsInCategory } from "../data/catalog";
 import NotFound from "./NotFound";
@@ -16,24 +17,23 @@ export default function Category() {
   if (!category) return <NotFound />;
 
   return (
-    <div className="page-wrap grid gap-6">
-      <header>
-        <p className="mb-1 mt-0 text-sm">
-          <Link to="/catalog">Sample catalog</Link>
+    <div className="page-wrap page-pad">
+      <PageMast eyebrow="Sample catalog" title={category.name}>
+        <p>
+          <Link to="/catalog">All sample products</Link>
         </p>
-        <h1 className="mb-2 mt-0 text-3xl">{category.name}</h1>
-        <p className="mt-0">{category.summary}</p>
-        <p className="text-sm">
+        <p>{category.summary}</p>
+        <p className="source-line">
           Source:{" "}
           <a href={category.sourceUrl} target="_blank" rel="noreferrer">
             {category.sourceUrl}
           </a>
         </p>
-      </header>
+      </PageMast>
       {items.length === 0 ? (
         <p>No sample products are assigned to this category.</p>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="product-stage cols-2">
           {items.map((product) => (
             <ProductCard key={product.slug} product={product} />
           ))}

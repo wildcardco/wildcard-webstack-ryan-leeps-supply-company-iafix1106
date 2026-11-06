@@ -161,7 +161,6 @@ export const heroMedia =
   null;
 
 export const primaryNav = [
-  { label: "Home", to: "/" },
   { label: "Catalog", to: "/catalog" },
   { label: "Brands", to: "/brands" },
   { label: "Locations", to: "/locations" },

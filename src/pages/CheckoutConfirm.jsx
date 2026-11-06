@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import PageMast from "../components/PageMast";
 import { TEST_CHECKOUT_KEY } from "./Checkout";
 
 export default function CheckoutConfirm() {
@@ -16,16 +17,19 @@ export default function CheckoutConfirm() {
   }, []);
 
   return (
-    <div className="page-wrap grid max-w-3xl gap-4">
-      <h1 className="mb-0 mt-0 text-3xl">Test review confirmation</h1>
-      <p className="m-0 border border-notice bg-notice p-4 text-notice-ink" role="status" data-testid="confirm-banner">
-        NO PAYMENT was taken. NO REAL ORDER was placed. Nothing was sent to
-        Leeps Supply Company.
-      </p>
+    <div className="page-wrap page-pad">
+      <PageMast eyebrow="Local demo reference" title="Test review confirmation">
+        <p className="test-stamp" role="status" data-testid="confirm-banner">
+          <strong className="test-kicker">No payment. No real order.</strong>
+          Nothing was sent to Leeps Supply Company.
+        </p>
+      </PageMast>
       {!review ? (
         <p data-testid="confirm-empty">
           No test review is stored in this browser session.{" "}
-          <Link to="/cart">Return to the cart</Link>
+          <Link className="text-link" to="/cart">
+            Return to the cart
+          </Link>
         </p>
       ) : (
         <div data-testid="confirm-review">
@@ -34,13 +38,13 @@ export default function CheckoutConfirm() {
             was generated in the browser. It is not a Leeps Supply order
             number.
           </p>
-          <ul className="m-0 list-none space-y-3 p-0">
+          <ul className="stack-list">
             {review.items.map((item) => (
-              <li key={item.slug} className="surface p-3 text-sm">
-                <p className="m-0 font-semibold">{item.name}</p>
-                <p className="m-0">Part {item.partNumber}</p>
-                <p className="m-0">Quantity {item.quantity}</p>
-                <p className="m-0">
+              <li key={item.slug} className="review-line">
+                <p className="product-name">{item.name}</p>
+                <p className="product-brand">Part {item.partNumber}</p>
+                <p className="product-brand">Quantity {item.quantity}</p>
+                <p>
                   {item.priceDisplay === "Call for Price"
                     ? "Call for Price"
                     : "Not verified · Contact for quote"}
@@ -48,13 +52,15 @@ export default function CheckoutConfirm() {
               </li>
             ))}
           </ul>
-          <p className="text-sm text-muted">
+          <p className="product-brand">
             Recorded locally at {review.createdAt}. Mode: {review.mode}.
           </p>
         </div>
       )}
       <p>
-        <Link to="/catalog">Back to the sample catalog</Link>
+        <Link className="btn" to="/catalog">
+          Back to the sample catalog
+        </Link>
       </p>
     </div>
   );

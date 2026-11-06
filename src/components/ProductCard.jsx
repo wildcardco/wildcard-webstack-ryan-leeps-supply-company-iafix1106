@@ -9,29 +9,28 @@ export default function ProductCard({ product }) {
   const image = product.images[0];
 
   return (
-    <article className="surface flex flex-col gap-3 p-4" data-testid="product-card">
-      <Link to={`/products/${product.slug}`} className="text-ink no-underline">
-        <img
-          src={image.src}
-          alt={image.alt}
-          className="aspect-square w-full object-contain bg-bg"
-        />
-        <h2 className="mb-1 mt-3 text-lg leading-snug">{product.name}</h2>
+    <article className="product-card" data-testid="product-card">
+      <p className="part-tab">Part {product.partNumber}</p>
+      <Link to={`/products/${product.slug}`} className="product-photo">
+        <img src={image.src} alt={image.alt} />
       </Link>
-      <p className="m-0 text-sm text-muted">
-        {product.brand} · Part {product.partNumber}
-      </p>
-      <p className="m-0 text-sm">{product.shortDescription}</p>
+      <h2>
+        <Link className="product-name" to={`/products/${product.slug}`}>
+          {product.name}
+        </Link>
+      </h2>
+      <p className="product-brand">{product.brand}</p>
+      <p className="product-copy">{product.shortDescription}</p>
       <PriceTag product={product} />
-      <p className="m-0 text-sm text-muted">
-        Availability: {product.availabilityDisplay}
-      </p>
+      <p className="avail-line">Availability: {product.availabilityDisplay}</p>
       {category ? (
-        <p className="m-0 text-sm">
-          <Link to={`/catalog/${category.slug}`}>{category.name}</Link>
+        <p className="product-brand">
+          <Link className="text-link" to={`/catalog/${category.slug}`}>
+            {category.name}
+          </Link>
         </p>
       ) : null}
-      <div className="mt-auto flex flex-wrap gap-2">
+      <div className="product-actions">
         <Link className="btn" to={`/products/${product.slug}`}>
           View details
         </Link>

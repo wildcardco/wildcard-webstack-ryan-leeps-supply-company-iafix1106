@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import PageMast from "../components/PageMast";
 import PriceTag from "../components/PriceTag";
 import { useCart } from "../context/CartContext";
 import { getProduct } from "../data/catalog";
@@ -44,45 +45,46 @@ export default function Checkout() {
   }
 
   return (
-    <div className="page-wrap grid max-w-3xl gap-6">
-      <header>
-        <h1 className="mb-2 mt-0 text-3xl">Test checkout</h1>
+    <div className="page-wrap page-pad">
+      <PageMast eyebrow="Local demo only" title="Test checkout">
         <p
-          className="m-0 border border-notice bg-notice p-4 text-notice-ink"
+          className="test-stamp"
           data-testid="checkout-mode"
           role="status"
         >
-          TEST / NO PAYMENT / NO REAL ORDER. This page only reviews the sample
-          cart in this browser. It does not collect payment, customer details,
-          or send an order to Leeps Supply.
+          <strong className="test-kicker">Test / No payment / No real order</strong>
+          This page only reviews the sample cart in this browser. It does not
+          collect payment, customer details, or send an order to Leeps Supply.
         </p>
-      </header>
+      </PageMast>
       {lines.length === 0 ? (
         <p>
           The cart is empty, so there is nothing to review.{" "}
-          <Link to="/catalog">Browse the sample catalog</Link>
+          <Link className="text-link" to="/catalog">
+            Browse the sample catalog
+          </Link>
         </p>
       ) : (
         <>
-          <ul className="m-0 grid list-none gap-3 p-0">
+          <ul className="stack-list">
             {lines.map((line) => {
               const product = getProduct(line.slug);
               if (!product) return null;
               return (
-                <li key={line.slug} className="surface p-4">
-                  <h2 className="mb-1 mt-0 text-lg">{product.name}</h2>
-                  <p className="m-0 text-sm">Part {product.partNumber}</p>
-                  <p className="m-0 text-sm">Quantity {line.quantity}</p>
+                <li key={line.slug} className="review-line">
+                  <h2 className="product-name">{product.name}</h2>
+                  <p className="product-brand">Part {product.partNumber}</p>
+                  <p className="product-brand">Quantity {line.quantity}</p>
                   <PriceTag product={product} />
                 </li>
               );
             })}
           </ul>
-          <p className="m-0 text-sm" data-testid="no-total">
+          <p data-testid="no-total">
             No order total, tax, discount, or shipping amount is shown. Sampled
             prices are not verified dollar amounts.
           </p>
-          <div className="flex flex-wrap gap-3">
+          <div className="hero-actions">
             <button
               type="button"
               className="btn"

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import PageMast from "../components/PageMast";
 
 export default function NotFound() {
   useEffect(() => {
@@ -7,12 +8,15 @@ export default function NotFound() {
   }, []);
 
   return (
-    <div className="page-wrap">
-      <h1 className="mt-0 text-3xl">Page not found</h1>
-      <p>
-        That page is not part of this sample catalog.{" "}
-        <Link to="/">Return home</Link>
-      </p>
+    <div className="page-wrap page-pad">
+      <PageMast eyebrow="Sample catalog" title="Page not found">
+        <p>That page is not part of this sample catalog.</p>
+        <p>
+          <Link className="btn" to="/">
+            Return home
+          </Link>
+        </p>
+      </PageMast>
     </div>
   );
 }

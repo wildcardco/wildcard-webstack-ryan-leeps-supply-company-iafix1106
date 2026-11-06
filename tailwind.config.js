@@ -17,6 +17,7 @@ export default {
       },
       fontFamily: {
         sans: ["var(--font-sans)"],
+        display: ["var(--font-display)"],
       },
       maxWidth: {
         page: "var(--page-max)",
